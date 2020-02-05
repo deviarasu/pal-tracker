@@ -12,7 +12,11 @@ jobs:
     - name: Set up JDK 11
       uses: actions/setup-java@v1
       with:
-      cf  java-version: 11
+        java-version: 11
+    - name: Create test database
+      run: |
+        mysql -uroot -proot < databases/tracker/create_databases.sql
+        ./gradlew testMigrate
     - name: Build with Gradle
       run: ./gradlew build
     - name: Publish artifact
@@ -59,8 +63,6 @@ jobs:
         sudo apt-get update
         sudo apt-get install cf-cli
         curl https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/5.2.1/flyway-commandline-5.2.1-linux-x64.tar.gz | tar xvz
-    - name: Make migrate script executable
-      run: chmod +x scripts/migrate-databases.sh
     - name: Migate tracker-database
       run: |
         cf login -a "$CF_API_URL" -o "$CF_ORG" -s "$CF_SPACE" -u "$CF_USERNAME" -p "$CF_PASSWORD"
