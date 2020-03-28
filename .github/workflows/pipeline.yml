@@ -17,7 +17,8 @@ jobs:
       run: chmod +x ./gradlew
     - name: Create test database
       run: |
-        mysql -uroot -ppassword < databases/tracker/create_databases.sql
+        sudo systemctl start mysql
+        mysql -uroot -proot < databases/tracker/create_databases.sql
         ./gradlew testMigrate
     - name: Build with Gradle
       run: ./gradlew build
